@@ -10,6 +10,8 @@ import com.annotation.IsFullScreen
 import com.annotation.LogTag
 import com.core.base.BaseApplication
 import com.core.base.BaseFontActivity
+import com.core.common.Constants
+import com.core.helper.gallery.GalleryCoreSplashActivity
 import com.core.utilities.*
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -42,8 +44,8 @@ class SplashActivity : BaseFontActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun setupViews() {
-        logD("setupViews")
-        LUIUtil.setDelay(mls = 1500, runnable = {
+//        logD("setupViews")
+        LUIUtil.setDelay(mls = 1000, runnable = {
             isAnimDone = true
             goToHome()
         })
@@ -56,14 +58,14 @@ class SplashActivity : BaseFontActivity() {
     override fun onResume() {
         super.onResume()
 
-        logD("onResume isShowDialogCheck $isShowDialogCheck")
+//        logD("onResume isShowDialogCheck $isShowDialogCheck")
         if (!isShowDialogCheck) {
             checkPermission()
         }
     }
 
     private fun checkPermission() {
-        logD("checkPermission")
+//        logD("checkPermission")
         isShowDialogCheck = true
         Dexter.withContext(this)
                 .withPermissions(
@@ -72,7 +74,7 @@ class SplashActivity : BaseFontActivity() {
                 )
                 .withListener(object : MultiplePermissionsListener {
                     override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                        logD("onPermissionsChecked " + report.areAllPermissionsGranted())
+//                        logD("onPermissionsChecked " + report.areAllPermissionsGranted())
                         // check if all permissions are granted
                         if (report.areAllPermissionsGranted()) {
                             checkReady()
@@ -100,11 +102,18 @@ class SplashActivity : BaseFontActivity() {
 
     private fun goToHome() {
         if (isAnimDone && isCheckReadyDone) {
-            logD("goToHome")
-//            val intent = Intent(this, MainActivity::class.java)
-//            startActivity(intent)
-//            LActivityUtil.tranIn(this)
-//            finishAfterTransition()
+//            logD("goToHome")
+            val intent = Intent(this, GalleryCoreSplashActivity::class.java).apply {
+                putExtra(Constants.AD_UNIT_ID_BANNER, getString(R.string.str_b))
+                putExtra(Constants.BKG_SPLASH_SCREEN, Constants.URL_IMG_11)
+
+                //neu muon remove albumn nao thi cu pass id cua album do
+                val removeAlbumFlickrList = ArrayList<String>()
+                removeAlbumFlickrList.add(Constants.FLICKR_ID_STICKER)
+                putStringArrayListExtra(Constants.KEY_REMOVE_ALBUM_FLICKR_LIST, removeAlbumFlickrList)
+            }
+            startActivity(intent)
+            finishAfterTransition()
         }
     }
 
@@ -179,12 +188,12 @@ class SplashActivity : BaseFontActivity() {
         }
 
         if (LPrefUtil.getCheckAppReady()) {
-            logD("checkReady getCheckAppReady return")
+//            logD("checkReady getCheckAppReady return")
             setReady()
             return
         }
         val linkGGDriveCheckReady = getString(R.string.link_gg_drive)
-        logD("<<<checkReady linkGGDriveCheckReady $linkGGDriveCheckReady")
+//        logD("<<<checkReady linkGGDriveCheckReady $linkGGDriveCheckReady")
         LStoreUtil.getTextFromGGDrive(
                 linkGGDrive = linkGGDriveCheckReady,
                 onGGFailure = { _: Call, e: Exception ->
@@ -192,7 +201,7 @@ class SplashActivity : BaseFontActivity() {
                     showDialogNotReady()
                 },
                 onGGResponse = { listGG: ArrayList<GG> ->
-                    logD(">>>checkReady getGG listGG: -> " + BaseApplication.gson.toJson(listGG))
+//                    logD(">>>checkReady getGG listGG: -> " + BaseApplication.gson.toJson(listGG))
 
                     fun isReady(): Boolean {
                         return listGG.any {
