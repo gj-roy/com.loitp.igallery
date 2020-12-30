@@ -113,6 +113,7 @@ class SplashActivity : BaseFontActivity() {
                 putStringArrayListExtra(Constants.KEY_REMOVE_ALBUM_FLICKR_LIST, removeAlbumFlickrList)
             }
             startActivity(intent)
+            LActivityUtil.tranIn(this)
             finishAfterTransition()
         }
     }
